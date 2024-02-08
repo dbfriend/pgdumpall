@@ -20,6 +20,6 @@ postgres@server:~ $ cat /var/lib/pgsql/.pgpass
 The script can be regulary scheduled at crontab for example:
 ```
 server:~ $ crontab -l
-#Vodafone PostgreSQL backup task
+#PostgreSQL backup task
 0 22 * * * /var/lib/pgsql/pg-backup.sh
 ```
