@@ -16,5 +16,6 @@ find ${BACKUPLOC} -type f \( -name '*.sql' -o -name '*.log' \) -mtime +30 -delet
 
 ### Change ownership to postgres user
 chown postgres:postgres ${BACKUPLOC}/pgdumpall_${POSTFIX}.*
+chmod 600 ${BACKUPLOC}/pgdumpall_${POSTFIX}.*
 
 exit 0
