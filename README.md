@@ -2,9 +2,9 @@
 This script creates a full PostgreSQL database backup
 
 ## Files
-- pgdumpall_HOSTNAME_DATETIME__.clog__  >>  List all deleted files, if backup retention of 30 days is reached and file gets deleted
-- pgdumpall_HOSTNAME_DATETIME**.log**  >> Show log og pg_dumpall execution
-- pgdumpall_HOSTNAME_DATETIME**.sql**  >> Logical backup file from pg_dumpall
+- pgdumpall_HOSTNAME_DATETIME.clog >>  List all deleted files, if backup retention of 30 days is reached and file gets deleted
+- pgdumpall_HOSTNAME_DATETIME.log >> Show log og pg_dumpall execution
+- pgdumpall_HOSTNAME_DATETIME.sql >> Logical backup file from pg_dumpall
 
 ## Requirements
 In order to authenticate pg_dumpall against to the database a file called .pgpass with a username and password must be available.
