@@ -1,5 +1,5 @@
 # pgdumpall
-This script creates 
+This script creates a full PostgreSQL database backup
 
 ## Files
 - pgdumpall_HOSTNAME_DATETIME.clog  >>  List all deleted files, if backup retention of 30 days is reached and file gets deleted
