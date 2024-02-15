@@ -1,12 +1,14 @@
-# pgdumpall
+# PostgreSQL Scripts
+
+## pg-backup.sh
 This script creates a full PostgreSQL database backup
 
-## Files
+### Files
 - pgdumpall_HOSTNAME_DATETIME.clog >>  List all deleted files, if backup retention of 30 days is reached and file gets deleted
 - pgdumpall_HOSTNAME_DATETIME.log >> Show log of pg_dumpall execution
 - pgdumpall_HOSTNAME_DATETIME.sql >> Logical backup file from pg_dumpall
 
-## Requirements
+### Requirements
 In order to authenticate pg_dumpall against to the database a file called .pgpass with a username and password must be available.
 More information can be read here: https://www.postgresql.org/docs/current/libpq-pgpass.html
 
@@ -16,7 +18,7 @@ postgres@server:~ $ cat /var/lib/pgsql/.pgpass
 *:*:*:backup:MYPASSWORD
 ```
 
-## Scheduling
+### Scheduling
 The script can be regulary scheduled at crontab for example:
 ```
 server:~ $ crontab -l
@@ -24,5 +26,6 @@ server:~ $ crontab -l
 0 22 * * * /var/lib/pgsql/pg-backup.sh
 ```
 
-# postgresql-banner.sh
-This small script shows some basic information about the PostgreSQL database
+## postgresql-banner.sh
+This small script shows some basic information about the PostgreSQL database.
+It should be placed at location "/etc/profile.d/" with 644 permissions to become active for every OS user
