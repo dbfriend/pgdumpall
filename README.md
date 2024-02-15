@@ -23,3 +23,6 @@ server:~ $ crontab -l
 #PostgreSQL backup task
 0 22 * * * /var/lib/pgsql/pg-backup.sh
 ```
+
+# postgresql-banner.sh
+This small script shows some basic information about the PostgreSQL database
