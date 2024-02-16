@@ -9,14 +9,20 @@ This script creates a full PostgreSQL database backup
 - pgdumpall_HOSTNAME_DATETIME.sql >> Logical backup file from pg_dumpall
 
 ### Requirements
+- The script **pg-backup.sh** should be placed for security reasons with 700 permissions to the home-directory of the user, for example: /home/postgres
 - In order to authenticate pg_dumpall against to the database a file called .pgpass with a username and password must be available.
-- The **PGPASS-file** as well as the script **pg-backup.sh** should be placed for security reasons to the home-directory of the user, for example: /home/postgres
-- More information can be read here: https://www.postgresql.org/docs/current/libpq-pgpass.html.
-- It is best practise to create a dedicated db user which is caring about the backup and not use the default super user "postgres"
+- The **PGPASS-file** should be placed for security reasons with 600 permissions to the home-directory 
+```
+postgres@itk480yr:~ $ ll -la
+-rwx------. 1 postgres postgres  701 Feb 16 11:19 pg-backup.sh
+-rw-------. 1 postgres postgres   38 Feb 13 13:02 .pgpass
+```
+- It is best practise to create a dedicated db user which is caring about the backup and not use the default super user "postgres". Here I created user "backup".
 ```
 postgres@server:~ $ cat /home/postgres/.pgpass
 *:*:*:backup:MYPASSWORD
 ```
+- More information can be read here: https://www.postgresql.org/docs/current/libpq-pgpass.html.
 
 ### Scheduling
 The script can be regulary scheduled at crontab for example:
