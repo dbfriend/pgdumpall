@@ -19,6 +19,10 @@ postgres@itk480yr:~ $ ll -la
 ```
 - It is best practise to create a dedicated db user which is caring about the backup and not use the default super user "postgres". Here I created user "backup".
 ```
+SQL> CREATE USER backup WITH ENCRYPTED PASSWORD '<password>‘; 
+SQL> GRANT pg_read_all_data to backup;
+```
+```
 postgres@server:~ $ cat /home/postgres/.pgpass
 *:*:*:backup:MYPASSWORD
 ```
@@ -34,7 +38,7 @@ server:~ $ crontab -l
 
 ## postgresql-banner.sh
 - This small script shows some basic information about the PostgreSQL database.
-- It should be placed at location "/etc/profile.d/postgresql-banner.sh" with 644 permissions to become active for every OS user
+- It should be placed at location "/etc/profile.d/postgresql-banner.sh" owned by root with 644 permissions to become active for every OS user
 Output:
 ```
 ########################################################
