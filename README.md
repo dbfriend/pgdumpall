@@ -29,3 +29,13 @@ server:~ $ crontab -l
 ## postgresql-banner.sh
 - This small script shows some basic information about the PostgreSQL database.
 - It should be placed at location "/etc/profile.d/postgresql-banner.sh" with 644 permissions to become active for every OS user
+Output:
+```
+########################################################
+     This is a PostgreSQL database server!
+########################################################
+
+postgresql.service: active
+PGDATA: /var/SP/postgres/pgdata
+Port: 5432
+```
