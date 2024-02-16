@@ -18,8 +18,10 @@ postgres@itk480yr:~ $ ll -la
 -rw-------. 1 postgres postgres   38 Feb 13 13:02 .pgpass
 ```
 - It is best practise to create a dedicated db user which is caring about the backup and not use the default super user "postgres". Here I created user "backup".
+  - ROLE pg_read_all_data which is available at PG version >= 14 can be used to restrict access
+  - Restore operation would be done with a superuse then
 ```
-SQL> CREATE USER backup WITH ENCRYPTED PASSWORD '<password>‘; 
+SQL> CREATE USER backup WITH ENCRYPTED PASSWORD '<password>'; 
 SQL> GRANT pg_read_all_data to backup;
 ```
 ```
