@@ -2,7 +2,7 @@
 ################################################################################################
 #### Scripname:         pg-backup.sh
 #### Description:       This is script is performing a PostgreSQL backup and is deleting older dumps
-#### Version:           1.0
+#### Version:           1.1
 ################################################################################################
 
 ### Set environment
@@ -50,6 +50,11 @@ if [ ! -f ${PGPASSFILE} ]; then
   mv ${BACKUPLOC}/pgdumpall_${POSTFIX}.log ${BACKUPLOC}/pgdumpall_${POSTFIX}.log.FAILED
   exit 1
 fi
+
+### Show file information
+echo "$(_currtime) - Log: ${BACKUPLOC}/pgdumpall_${POSTFIX}.log" | tee -a ${BACKUPLOC}/pgdumpall_${POSTFIX}.log
+echo "$(_currtime) - Backup file: ${BACKUPLOC}/pgdumpall_${POSTFIX}.sql" | tee -a ${BACKUPLOC}/pgdumpall_${POSTFIX}.log
+echo "$(_currtime) - Clean log: ${CLEANLOG}" | tee -a ${BACKUPLOC}/pgdumpall_${POSTFIX}.log
 
 ### Do the actual work
 echo "$(_currtime) - Progressing ..." | tee -a ${BACKUPLOC}/pgdumpall_${POSTFIX}.log
