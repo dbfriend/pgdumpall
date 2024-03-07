@@ -2,7 +2,7 @@
 ################################################################################################
 #### Scripname:         pg-backup.sh
 #### Description:       This is script is performing a PostgreSQL backup and is deleting older dumps
-#### Version:           1.1
+#### Version:           1.2
 ################################################################################################
 
 ### Set environment
@@ -12,15 +12,12 @@ POSTFIX=${HOSTNAME}_$(date +"%Y%m%d%H%M")
 PGDUMPALL=/usr/bin/pg_dumpall
 CLEANLOG=${BACKUPLOC}/pgdumpall_${POSTFIX}.clog
 export PGPASSFILE=/var/lib/pgsql/.pgpass
-
+RETENTION=24
 
 #### Time Function for logs
 _currtime() {
   echo "$(date +"%Y-%m-%dT%H:%M:%S.%3N%z")"
 }
-
-STARTECHO="$(_currtime) - Script start"
-echo ${STARTECHO}
 
 ### Check backup dir
 if [ ! -d "${BACKUPLOC}" ]; then
@@ -29,11 +26,11 @@ if [ ! -d "${BACKUPLOC}" ]; then
   exit 1
 fi
 
-### Create log-file
+### Create log-files
 touch ${BACKUPLOC}/pgdumpall_${POSTFIX}.log
 chown postgres:postgres ${BACKUPLOC}/pgdumpall_${POSTFIX}.log
 chmod 600 ${BACKUPLOC}/pgdumpall_${POSTFIX}.log
-echo ${STARTECHO} >> "${BACKUPLOC}/pgdumpall_${POSTFIX}.log"
+echo "$(_currtime) - Script start" | tee -a "${BACKUPLOC}/pgdumpall_${POSTFIX}.log" ${CLEANLOG}
 
 #### Check if pg_dumpall-binaries exists
 if [ ! -x ${PGDUMPALL} ]; then
@@ -55,6 +52,7 @@ fi
 echo "$(_currtime) - Log: ${BACKUPLOC}/pgdumpall_${POSTFIX}.log" | tee -a ${BACKUPLOC}/pgdumpall_${POSTFIX}.log
 echo "$(_currtime) - Backup file: ${BACKUPLOC}/pgdumpall_${POSTFIX}.sql" | tee -a ${BACKUPLOC}/pgdumpall_${POSTFIX}.log
 echo "$(_currtime) - Clean log: ${CLEANLOG}" | tee -a ${BACKUPLOC}/pgdumpall_${POSTFIX}.log
+echo "$(_currtime) - Backup retention: ${RETENTION} days" | tee -a ${BACKUPLOC}/pgdumpall_${POSTFIX}.log ${CLEANLOG}
 
 ### Do the actual work
 echo "$(_currtime) - Progressing ..." | tee -a ${BACKUPLOC}/pgdumpall_${POSTFIX}.log
@@ -70,13 +68,19 @@ if [ ${BCK_RC} -ne 0 ]; then
   exit 1
 fi
 
-### Delete backups and its logs which are older than 30 days
-find ${BACKUPLOC} -type f \( -name '*.sql' -o -name '*.log' \) -mtime +30 -delete | tee -a ${CLEANLOG}
+echo "$(_currtime) - Backup completed successfully."    | tee -a ${BACKUPLOC}/pgdumpall_${POSTFIX}.log
+
+### Delete backups and its logs which are older than retention period
+echo "$(_currtime) - Because of the retention policy these backups will be deleted: " | tee -a ${CLEANLOG}
+
+for FILE in $(find ${BACKUPLOC} -type f \( -name '*.sql' -o -name '*.log' \) -mtime +${RETENTION} ! -path '*/.snapshot/*'); do
+  echo "$(_currtime) - $(ls ${FILE})" | tee -a ${CLEANLOG}
+  rm -f ${FILE}
+done
 
 ### Change ownership to postgres user
 chown postgres:postgres ${BACKUPLOC}/pgdumpall_${POSTFIX}.*
 chmod 600 ${BACKUPLOC}/pgdumpall_${POSTFIX}.*
 
-echo "$(_currtime) - Backup completed successfully."    | tee -a ${BACKUPLOC}/pgdumpall_${POSTFIX}.log
-echo "$(_currtime) - Script ends"                       | tee -a ${BACKUPLOC}/pgdumpall_${POSTFIX}.log
+echo "$(_currtime) - Script ends"                       | tee -a ${BACKUPLOC}/pgdumpall_${POSTFIX}.log ${CLEANLOG}
 exit 0
