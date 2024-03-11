@@ -2,7 +2,7 @@
 ################################################################################################
 #### Scripname:         pg-backup.sh
 #### Description:       This is script is performing a PostgreSQL backup and is deleting older dumps
-#### Version:           1.3
+#### Version:           1.4
 ################################################################################################
 
 ### Set environment
@@ -19,6 +19,12 @@ RETENTION=32
 _currtime() {
   echo "$(date +"%Y-%m-%dT%H:%M:%S.%3N%z")"
 }
+
+### Check if script is already running
+if [ $(pgrep -f $(basename $0) | wc -l) -gt 2 ]; then
+  echo "Backup script already running"
+  exit 1
+fi
 
 ### Check backup dir
 if [ ! -d "${BACKUPLOC}" ]; then
