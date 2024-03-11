@@ -2,18 +2,19 @@
 ################################################################################################
 #### Scripname:         pg-backup.sh
 #### Description:       This is script is performing a PostgreSQL backup and is deleting older dumps
-#### Version:           1.4
+#### Version:           1.3
 ################################################################################################
 
 ### Set environment
 BACKUPLOC=/var/SP/postgres/backup
 USER=backup
-export PGPASSFILE=/var/lib/pgsql/.pgpass
+export PGPASSFILE=/var/SP/postgres/home/.pgpass
 PGDUMPALL=/usr/bin/pg_dumpall
 POSTFIX=${HOSTNAME}_$(date +"%Y%m%d%H%M")
 CLEANLOG=${BACKUPLOC}/pgdumpall_${POSTFIX}.clog
 LOGFILE=${BACKUPLOC}/pgdumpall_${POSTFIX}.log
 RETENTION=32
+SCRIPTVERSION="1.3"
 
 #### Time Function for logs
 _currtime() {
@@ -21,7 +22,7 @@ _currtime() {
 }
 
 ### Check if script is already running
-if [ $(pgrep -f $(basename $0) | wc -l) -gt 2 ]; then
+if [ $(pgrep -f $(basename $0) | wc --lines) -gt 2 ]; then
   echo "Backup script already running"
   exit 1
 fi
@@ -56,6 +57,7 @@ if [ ! -f ${PGPASSFILE} ]; then
 fi
 
 ### Show file information
+echo "$(_currtime) - Script version: ${SCRIPTVERSION}" | tee -a ${LOGFILE}
 echo "$(_currtime) - Log: ${LOGFILE}" | tee -a ${LOGFILE}
 echo "$(_currtime) - Backup file: ${BACKUPLOC}/pgdumpall_${POSTFIX}.sql" | tee -a ${LOGFILE}
 echo "$(_currtime) - Clean log: ${CLEANLOG}" | tee -a ${LOGFILE}
@@ -63,7 +65,7 @@ echo "$(_currtime) - Backup retention: ${RETENTION} days" | tee -a ${LOGFILE}
 
 ### Do the actual work
 echo "$(_currtime) - Progressing ..." | tee -a ${LOGFILE}
-${PGDUMPALL} -v -c -U ${USER} -f ${BACKUPLOC}/pgdumpall_${POSTFIX}.sql >> ${LOGFILE} 2>&1
+${PGDUMPALL} --verbose --clean --username=${USER} --file=${BACKUPLOC}/pgdumpall_${POSTFIX}.sql >> ${LOGFILE} 2>&1
 BCK_RC=${?}
 
 #### Error handling
@@ -82,7 +84,7 @@ echo "$(_currtime) - Because of the retention policy these backups will be delet
 
 for FILE in $(find ${BACKUPLOC} -type f \( -name '*.sql' -o -name '*.log' \) -mtime +${RETENTION} ! -path '*/.snapshot/*'); do
   echo "$(_currtime) - $(ls ${FILE})" | tee -a ${CLEANLOG}
-  rm -f ${FILE}
+  rm --force ${FILE}
 done
 
 ### Change ownership to postgres user
