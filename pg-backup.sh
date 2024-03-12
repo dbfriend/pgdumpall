@@ -5,15 +5,17 @@
 #### Version:           1.3
 ################################################################################################
 
-### Set environment
+### Set environment specific variables
 BACKUPLOC=/var/SP/postgres/backup
 USER=backup
+RETENTION=32
 export PGPASSFILE=/var/SP/postgres/home/.pgpass
+
+### Set script specific variables
 PGDUMPALL=/usr/bin/pg_dumpall
 POSTFIX=${HOSTNAME}_$(date +"%Y%m%d%H%M")
 CLEANLOG=${BACKUPLOC}/pgdumpall_${POSTFIX}.clog
 LOGFILE=${BACKUPLOC}/pgdumpall_${POSTFIX}.log
-RETENTION=32
 SCRIPTVERSION="1.3"
 
 #### Time Function for logs
