@@ -2,21 +2,21 @@
 ################################################################################################
 #### Scripname:         pg-backup.sh
 #### Description:       This is script is performing a PostgreSQL backup and is deleting older dumps
-#### Version:           1.3
+#### Version:           1.4
 ################################################################################################
 
-### Set environment specific variables
+### Environment specific variables
 BACKUPLOC=/var/SP/postgres/backup
 USER=backup
 RETENTION=32
 PGDUMPALL=/usr/bin/pg_dumpall
 export PGPASSFILE=/var/SP/postgres/home/.pgpass
 
-### Set script specific variables
+### Script specific variables
 POSTFIX=${HOSTNAME}_$(date +"%Y%m%d%H%M")
 CLEANLOG=${BACKUPLOC}/pgdumpall_${POSTFIX}.clog
 LOGFILE=${BACKUPLOC}/pgdumpall_${POSTFIX}.log
-SCRIPTVERSION="1.3"
+SCRIPTVERSION="1.4"
 
 #### Time Function for logs
 _currtime() {
