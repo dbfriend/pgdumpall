@@ -9,10 +9,10 @@
 BACKUPLOC=/var/SP/postgres/backup
 USER=backup
 RETENTION=32
+PGDUMPALL=/usr/bin/pg_dumpall
 export PGPASSFILE=/var/SP/postgres/home/.pgpass
 
 ### Set script specific variables
-PGDUMPALL=/usr/bin/pg_dumpall
 POSTFIX=${HOSTNAME}_$(date +"%Y%m%d%H%M")
 CLEANLOG=${BACKUPLOC}/pgdumpall_${POSTFIX}.clog
 LOGFILE=${BACKUPLOC}/pgdumpall_${POSTFIX}.log
