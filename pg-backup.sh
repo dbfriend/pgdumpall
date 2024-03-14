@@ -84,7 +84,7 @@ echo "$(_currtime) - Backup completed successfully."    | tee -a ${LOGFILE}
 ### Delete backups and its logs which are older than retention period
 echo "$(_currtime) - Because of the retention policy these backups will be deleted: " | tee -a ${CLEANLOG}
 
-for FILE in $(find ${BACKUPLOC} -type f \( -name '*.sql' -o -name '*.log' -o -name '*.clog'\) -mtime +${RETENTION} ! -path '*/.snapshot/*'); do
+for FILE in $(find ${BACKUPLOC} -type f \( -name '*.sql' -o -name '*.log' -o -name '*.clog' \) -mtime +${RETENTION} ! -path '*/.snapshot/*'); do
   echo "$(_currtime) - $(ls ${FILE})" | tee -a ${CLEANLOG}
   rm --force ${FILE}
 done
