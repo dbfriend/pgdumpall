@@ -2,13 +2,13 @@
 ################################################################################################
 #### Scripname:         pg-backup.sh
 #### Description:       This is script is performing a PostgreSQL backup and is deleting older dumps
-#### Version:           1.4
+#### Version:           1.4.1
 ################################################################################################
 
 ### Environment specific variables
 BACKUPLOC=/var/SP/postgres/backup
 USER=backup
-RETENTION=32
+RETENTION=30
 PGDUMPALL=/usr/bin/pg_dumpall
 export PGPASSFILE=/var/SP/postgres/home/.pgpass
 
@@ -16,7 +16,7 @@ export PGPASSFILE=/var/SP/postgres/home/.pgpass
 POSTFIX=${HOSTNAME}_$(date +"%Y%m%d%H%M")
 CLEANLOG=${BACKUPLOC}/pgdumpall_${POSTFIX}.clog
 LOGFILE=${BACKUPLOC}/pgdumpall_${POSTFIX}.log
-SCRIPTVERSION="1.4"
+SCRIPTVERSION="1.4.1"
 
 #### Time Function for logs
 _currtime() {
@@ -85,7 +85,7 @@ echo "$(_currtime) - Backup completed successfully."    | tee -a ${LOGFILE}
 echo "$(_currtime) - Because of the retention policy these backups will be deleted: " | tee -a ${CLEANLOG}
 
 for FILE in $(find ${BACKUPLOC} -type f \( -name '*.sql' -o -name '*.log' -o -name '*.clog' \) -mtime +${RETENTION} ! -path '*/.snapshot/*'); do
-  echo "$(_currtime) - $(ls ${FILE})" | tee -a ${CLEANLOG}
+  echo "$(_currtime) - $(ls ${FILE}) - Size: $(du -h ${FILE} | awk '{print $1}')" | tee -a ${CLEANLOG}
   rm --force ${FILE}
 done
 
