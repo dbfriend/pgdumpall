@@ -3,7 +3,7 @@
 # Description: This small script shows some basic information about the PostgreSQL database. Should be placed at location /etc/profile.d/ with 644 permissions
 # Version: 1.0
 
-PGDATALOC=$(systemctl cat postgresql.service | grep "Environment=PGDATA=" | awk -F'=' '{print $3}')
+PGDATALOC=$(systemctl cat postgresql.service | grep "Environment=PGDATA=" | awk -F'=' '{print $3}' | tail -1)
 PGREADY=5432
 
 echo ""
