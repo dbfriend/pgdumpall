@@ -85,7 +85,7 @@ echo "$(_currtime) - Backup completed successfully."    | tee -a ${LOGFILE}
 echo "$(_currtime) - Because of the retention policy these backups will be deleted: " | tee -a ${CLEANLOG}
 
 for FILE in $(find ${BACKUPLOC} -type f \( -name '*.sql' -o -name '*.log' -o -name '*.clog' \) -mtime +${RETENTION} ! -path '*/.snapshot/*'); do
-  echo "$(_currtime) - $(ls ${FILE}) - Size: $(du -h ${FILE} | awk '{print $1}')" | tee -a ${CLEANLOG}
+  echo "$(_currtime) - $(ls -lh ${FILE} | awk '{print $9" - Size: "$5 }')" | tee -a ${CLEANLOG}
   rm --force ${FILE}
 done
 
