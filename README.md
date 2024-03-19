@@ -11,8 +11,8 @@ This script creates a full PostgreSQL database backup
 ### Requirements
 - The script **pg-backup.sh** should be placed for security reasons with 700 permissions to the home-directory of the user, for example: /home/postgres
 - The file **pg-backup.conf** should be placed for security reasons with 400 permissions to the home-directory of the user, for example: /home/postgres
-- The **PGPASS-file** should be placed for security reasons with 600 permissions to the home-directory
-   - In order to authenticate pg_dumpall against to the database a file called .pgpass with a username and password must be available.
+- The **.pgpass** should be placed for security reasons with 600 permissions to the home-directory
+   - In order to authenticate pg_dumpall against to the database the file .pgpass with a username and password must be available.
 ```
 postgres@itk480yr:~ $ ll -la
 -rwx------. 1 postgres postgres  701 Feb 16 11:19 pg-backup.sh
