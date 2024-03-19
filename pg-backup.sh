@@ -2,26 +2,28 @@
 ################################################################################################
 #### Scripname:         pg-backup.sh
 #### Description:       This is script is performing a PostgreSQL backup and is deleting older dumps
-#### Version:           1.4.1
+#### Version:           1.5
 ################################################################################################
-
-### Environment specific variables
-BACKUPLOC=/var/SP/postgres/backup
-USER=backup
-RETENTION=30
-PGDUMPALL=/usr/bin/pg_dumpall
-export PGPASSFILE=/var/SP/postgres/home/.pgpass
-
-### Script specific variables
-POSTFIX=${HOSTNAME}_$(date +"%Y%m%d%H%M")
-CLEANLOG=${BACKUPLOC}/pgdumpall_${POSTFIX}.clog
-LOGFILE=${BACKUPLOC}/pgdumpall_${POSTFIX}.log
-SCRIPTVERSION="1.4.1"
 
 #### Time Function for logs
 _currtime() {
   echo "$(date +"%Y-%m-%dT%H:%M:%S.%3N%z")"
 }
+
+### Environment specific variables
+if [ ! -f $(dirname $0)/pg-backup.conf ]; then
+  echo "$(_currtime) - Cannot find config.file at $(dirname $0)/pg-backup.conf"
+  exit 1
+fi
+
+echo "$(_currtime) - Load config file $(dirname $0)/pg-backup.conf"
+source "$(dirname $0)/pg-backup.conf"
+
+### Script specific variables
+POSTFIX=${HOSTNAME}_$(date +"%Y%m%d%H%M")
+CLEANLOG=${BACKUPLOC}/pgdumpall_${POSTFIX}.clog
+LOGFILE=${BACKUPLOC}/pgdumpall_${POSTFIX}.log
+SCRIPTVERSION="1.4"
 
 ### Check if script is already running
 if [ $(pgrep -f $(basename $0) | wc --lines) -gt 2 ]; then
