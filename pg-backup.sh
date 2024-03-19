@@ -2,7 +2,7 @@
 ################################################################################################
 #### Scripname:         pg-backup.sh
 #### Description:       This is script is performing a PostgreSQL backup and is deleting older dumps
-#### Version:           1.5
+#### Version:           1.6
 ################################################################################################
 
 #### Time Function for logs
@@ -23,7 +23,7 @@ source "$(dirname $0)/pg-backup.conf"
 POSTFIX=${HOSTNAME}_$(date +"%Y%m%d%H%M")
 CLEANLOG=${BACKUPLOC}/pgdumpall_${POSTFIX}.clog
 LOGFILE=${BACKUPLOC}/pgdumpall_${POSTFIX}.log
-SCRIPTVERSION="1.4"
+SCRIPTVERSION="1.6"
 
 ### Check if script is already running
 if [ $(pgrep -f $(basename $0) | wc --lines) -gt 2 ]; then
@@ -84,12 +84,37 @@ fi
 echo "$(_currtime) - Backup completed successfully."    | tee -a ${LOGFILE}
 
 ### Delete backups and its logs which are older than retention period
-echo "$(_currtime) - Because of the retention policy these backups will be deleted: " | tee -a ${CLEANLOG}
+echo "$(_currtime) - Backups after ${RETENTION} days will be deleted: " | tee -a ${CLEANLOG}
 
-for FILE in $(find ${BACKUPLOC} -type f \( -name '*.sql' -o -name '*.log' -o -name '*.clog' \) -mtime +${RETENTION} ! -path '*/.snapshot/*'); do
+for FILE in $(find ${BACKUPLOC} -type f \( -name '*.sql' -o -name '*.sql.gz' -o -name '*.sql.zst' -o -name '*.log' -o -name '*.clog' \) -mtime +${RETENTION} ! -path '*/.snapshot/*'); do
   echo "$(_currtime) - $(ls -lh ${FILE} | awk '{print $9" - Size: "$5 }')" | tee -a ${CLEANLOG}
   rm --force ${FILE}
 done
+
+### Compress older backups to save storage
+echo "$(_currtime) - Backups after ${COMPRESSAFTER} days will be compressed: " | tee -a ${CLEANLOG}
+
+if [ -x "/usr/bin/zstd" ]; then
+  echo "$(_currtime) - Using Zstandard (*.zst) for compression"
+  CTOOL="/usr/bin/zstd --rm --quiet --force"
+  CTOOLEXT="zst"
+
+elif [ -x "/usr/bin/gzip" ]; then
+  echo "$(_currtime) - Using Gzip (*.gz) for compression"
+  CTOOL="/usr/bin/gzip --force"
+  CTOOLEXT="gz"
+
+else
+  echo "$(_currtime) - No compression tool found, skip compression :("
+  CTOOL="NF"
+fi
+
+if [ "${CTOOL}" != "NF" ]; then
+  for FILE in $(find ${BACKUPLOC} -type f -name '*.sql' -mtime +${COMPRESSAFTER} ! -path '*/.snapshot/*'); do
+    echo "$(_currtime) - $(ls ${FILE}) >> $(ls ${FILE}).${CTOOLEXT}" | tee -a ${CLEANLOG}
+    ${CTOOL} ${FILE}
+  done
+fi
 
 ### Change ownership to postgres user
 chown postgres:postgres ${BACKUPLOC}/pgdumpall_${POSTFIX}.*
