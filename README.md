@@ -39,7 +39,7 @@ server:~ $ crontab -l
 0 22 * * * /home/postgres/pg-backup.sh
 ```
 ### Backup flow visualisation
-![GitHub Image](/images/pg-backup-process-flow.png)
+![GitHub Image](pg-backup-process-flow.png)
 
 ## postgresql-banner.sh
 - This small script shows some basic information about the PostgreSQL database.
