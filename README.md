@@ -40,7 +40,7 @@ $ ls -la $HOME/scripts/pg-backup
 ### Output Files
 | File name  | Description |
 | ------------- | ------------- |
-| pgdumpall_HOSTNAME_DATETIME**.clog**  | List all deleted and compressed files depending on the retention  |
+| pgdumpall_HOSTNAME_DATETIME **.clog**  | List all deleted and compressed files depending on the retention  |
 | pgdumpall_HOSTNAME_DATETIME.log  |  General script log of pg_dumpall execution  |
 | pgdumpall_HOSTNAME_DATETIME.lsql  | Actual backup file from pg_dumpall  |
 
