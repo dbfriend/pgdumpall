@@ -29,7 +29,7 @@ $ cat /home/postgres/.pgpass
 - More information can be read here: https://www.postgresql.org/docs/current/libpq-pgpass.html.
 
 ### Script File and file system layout
-```bash
+```
 $ mkdir -p $HOME/scripts/pg-backup
 $ cp pg-backup.conf pg-backup.sh .pgpass $HOME/scripts/pg-backup
 $ ls -la $HOME/scripts/pg-backup
