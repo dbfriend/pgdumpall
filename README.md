@@ -3,6 +3,13 @@
 ## pg-backup.sh
 This script creates a full PostgreSQL database backup
 
+### Features
+- Performing a logical backup of all databases within the PostgreSQL instance
+- Generating logs and includes error handling
+- Can be scheduled for daily execution
+- Included a backup retention mechanism and is deleting backups after a define time automatically
+- It compresses backups to save storage. Compressions algorithm can be Gzip or Zstandard
+
 ### Requirements
 - The script **pg-backup.sh** should be placed for security reasons with 700 permissions to the home-directory of the user, for example: /home/postgres
 - The file **pg-backup.conf** should be placed for security reasons with 600 permissions to the home-directory of the user, for example: /home/postgres
@@ -46,17 +53,3 @@ $ crontab -l
 ```
 ### Backup flow visualisation
 ![GitHub Image](pg-backup-process-flow.png)
-
-## postgresql-banner.sh
-- This small script shows some basic information about the PostgreSQL database.
-- It should be placed at location "/etc/profile.d/postgresql-banner.sh" owned by root with 644 permissions to become active for every OS user
-Output:
-```
-########################################################
-     This is a PostgreSQL database server!
-########################################################
-
-postgresql.service: active
-PGDATA: /var/SP/postgres/pgdata
-Port: 5432
-```
