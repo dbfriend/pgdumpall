@@ -13,11 +13,6 @@ This script creates a full PostgreSQL database backup
 - The file **pg-backup.conf** should be placed for security reasons with 600 permissions to the home-directory of the user, for example: /home/postgres
 - The **.pgpass** should be placed for security reasons with 600 permissions to the home-directory
    - In order to authenticate pg_dumpall against to the database the file .pgpass with a username and password must be available.
-```
-postgres@itk480yr:~ $ ll -la
--rwx------. 1 postgres postgres  701 Feb 16 11:19 pg-backup.sh
--rw-------. 1 postgres postgres   38 Feb 13 13:02 .pgpass
-```
 - It is best practise to create a dedicated db user which is caring about the backup and not use the default super user "postgres". Here I created user "backup".
   - ROLE pg_read_all_data which is available at PG version >= 14 can be used to restrict access
   - Restore operation would be done with a superuse then
@@ -30,6 +25,16 @@ postgres@server:~ $ cat /home/postgres/.pgpass
 *:*:*:backup:MYPASSWORD
 ```
 - More information can be read here: https://www.postgresql.org/docs/current/libpq-pgpass.html.
+
+### Typical FS layout
+```
+$ mkdir -p $HOME/scripts/pg-backup
+$ cp pg-backup.conf pg-backup.sh .pgpass $HOME/scripts/pg-backup
+$ ls -la $HOME/scripts/pg-backup
+-rw-------. 1 postgres postgres  534 Mar 22 09:15 pg-backup.conf
+-rwx------. 1 postgres postgres 4688 Mar 22 09:15 pg-backup.sh
+-rw-------. 1 postgres postgres   28 Mar 22 09:15 .pgpass
+```
 
 ### Scheduling
 The script can be regulary scheduled at crontab for example:
