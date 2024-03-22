@@ -4,11 +4,11 @@
 This script creates a full PostgreSQL database backup
 
 ### Features
-- Performing a logical backup of all databases within the PostgreSQL instance
-- Generating logs and includes error handling
-- Can be scheduled for daily execution
-- Included a backup retention mechanism and is deleting backups after a define time automatically
-- It compresses backups to save storage. Compressions algorithm can be Gzip or Zstandard
+- [x] Performing a logical backup of all databases within the PostgreSQL instance
+- [x] Generating logs and includes error handling
+- [x] Can be scheduled for daily execution
+- [x] Included a backup retention mechanism and is deleting backups after a define time automatically
+- [x] Compresses backups to save storage. Compressions algorithm can be Gzip or Zstandard
 
 ### Requirements
 - The script **pg-backup.sh** should be placed for security reasons with 700 permissions to the home-directory of the user, for example: /home/postgres
@@ -41,8 +41,8 @@ $ ls -la $HOME/scripts/pg-backup
 | File name  | Description |
 | ------------- | ------------- |
 | pgdumpall_HOSTNAME_DATETIME **.clog**  | List all deleted and compressed files depending on the retention  |
-| pgdumpall_HOSTNAME_DATETIME.log  |  General script log of pg_dumpall execution  |
-| pgdumpall_HOSTNAME_DATETIME.lsql  | Actual backup file from pg_dumpall  |
+| pgdumpall_HOSTNAME_DATETIME **.log**  |  General script log of pg_dumpall execution  |
+| pgdumpall_HOSTNAME_DATETIME **.sql**  | Actual backup file from pg_dumpall  |
 
 ### Scheduling
 The script can be regulary scheduled at crontab for example:
