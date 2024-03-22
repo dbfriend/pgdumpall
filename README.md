@@ -3,11 +3,6 @@
 ## pg-backup.sh
 This script creates a full PostgreSQL database backup
 
-### Files
-- pgdumpall_HOSTNAME_DATETIME.clog >>  List all deleted files, if backup retention of 30 days is reached and file gets deleted
-- pgdumpall_HOSTNAME_DATETIME.log >> Show log of pg_dumpall execution
-- pgdumpall_HOSTNAME_DATETIME.sql >> Logical backup file from pg_dumpall
-
 ### Requirements
 - The script **pg-backup.sh** should be placed for security reasons with 700 permissions to the home-directory of the user, for example: /home/postgres
 - The file **pg-backup.conf** should be placed for security reasons with 600 permissions to the home-directory of the user, for example: /home/postgres
@@ -26,7 +21,7 @@ $ cat /home/postgres/.pgpass
 ```
 - More information can be read here: https://www.postgresql.org/docs/current/libpq-pgpass.html.
 
-### Typical FS layout
+### Script File and file system layout
 ```
 $ mkdir -p $HOME/scripts/pg-backup
 $ cp pg-backup.conf pg-backup.sh .pgpass $HOME/scripts/pg-backup
@@ -35,6 +30,12 @@ $ ls -la $HOME/scripts/pg-backup
 -rwx------. 1 postgres postgres 4688 Mar 22 09:15 pg-backup.sh
 -rw-------. 1 postgres postgres   28 Mar 22 09:15 .pgpass
 ```
+### Output Files
+| File name  | Description |
+| ------------- | ------------- |
+| pgdumpall_HOSTNAME_DATETIME.clog  | List all deleted and compressed files depending on the retention  |
+| pgdumpall_HOSTNAME_DATETIME.log  |  General script log of pg_dumpall execution  |
+| pgdumpall_HOSTNAME_DATETIME.lsql  | Actual backup file from pg_dumpall  |
 
 ### Scheduling
 The script can be regulary scheduled at crontab for example:
