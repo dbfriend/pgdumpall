@@ -66,6 +66,7 @@ echo "$(_currtime) - Log: ${LOGFILE}" | tee -a ${LOGFILE}
 echo "$(_currtime) - Backup file: ${BACKUPLOC}/pgdumpall_${POSTFIX}.sql" | tee -a ${LOGFILE}
 echo "$(_currtime) - Clean log: ${CLEANLOG}" | tee -a ${LOGFILE}
 echo "$(_currtime) - Backup retention: ${RETENTION} days" | tee -a ${LOGFILE}
+echo "$(_currtime) - Compress backup after: ${COMPRESSAFTER} days" | tee -a ${LOGFILE}
 
 ### Do the actual work
 echo "$(_currtime) - Progressing ..." | tee -a ${LOGFILE}
@@ -95,17 +96,17 @@ done
 echo "$(_currtime) - Backups after ${COMPRESSAFTER} days will be compressed: " | tee -a ${CLEANLOG}
 
 if [ -x "/usr/bin/zstd" ]; then
-  echo "$(_currtime) - Using Zstandard (*.zst) for compression"
+  echo "$(_currtime) - Using Zstandard (*.zst) for compression" | tee -a ${CLEANLOG}
   CTOOL="/usr/bin/zstd --rm --quiet --force"
   CTOOLEXT="zst"
 
 elif [ -x "/usr/bin/gzip" ]; then
-  echo "$(_currtime) - Using Gzip (*.gz) for compression"
+  echo "$(_currtime) - Using Gzip (*.gz) for compression" | tee -a ${CLEANLOG}
   CTOOL="/usr/bin/gzip --force"
   CTOOLEXT="gz"
 
 else
-  echo "$(_currtime) - No compression tool found, skip compression :("
+  echo "$(_currtime) - No compression tool found, skip compression :(" | tee -a ${CLEANLOG}
   CTOOL="NF"
 fi
 
