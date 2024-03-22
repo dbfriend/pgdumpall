@@ -21,7 +21,7 @@ SQL> CREATE USER backup WITH ENCRYPTED PASSWORD '<password>';
 SQL> GRANT pg_read_all_data to backup;
 ```
 ```
-postgres@server:~ $ cat /home/postgres/.pgpass
+$ cat /home/postgres/.pgpass
 *:*:*:backup:MYPASSWORD
 ```
 - More information can be read here: https://www.postgresql.org/docs/current/libpq-pgpass.html.
@@ -39,9 +39,9 @@ $ ls -la $HOME/scripts/pg-backup
 ### Scheduling
 The script can be regulary scheduled at crontab for example:
 ```
-server:~ $ crontab -l
+$ crontab -l
 #PostgreSQL backup task
-0 22 * * * /home/postgres/pg-backup.sh
+0 22 * * * /home/postgres/scripts/pg-backup/pg-backup.sh
 ```
 ### Backup flow visualisation
 ![GitHub Image](pg-backup-process-flow.png)
