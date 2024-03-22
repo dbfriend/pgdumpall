@@ -16,8 +16,8 @@ This script creates a full PostgreSQL database backup
 - The **.pgpass** should be placed for security reasons with 600 permissions to the home-directory
    - In order to authenticate pg_dumpall against to the database the file .pgpass with a username and password must be available.
 - It is best practise to create a dedicated db user which is caring about the backup and not use the default super user "postgres". Here I created user "backup".
-  - ROLE pg_read_all_data which is available at PG version >= 14 can be used to restrict access
-  - Restore operation would be done with a superuse then
+  - ROLE pg_read_all_data which is available at PG version >= 14 can be used to restrict access (Restore operation would be done with a superuser then)
+  - For PG_VERSION < 14 superuser role must be granted
 ```
 SQL> CREATE USER backup WITH ENCRYPTED PASSWORD '<password>'; 
 SQL> GRANT pg_read_all_data to backup;
