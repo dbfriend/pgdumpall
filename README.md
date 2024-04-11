@@ -5,6 +5,7 @@ This script creates a full PostgreSQL database backup
 
 ### Features
 - [x] Performing a logical backup of all databases within the PostgreSQL instance
+- [X] Backup config-files (pg_hba.conf, pg_ident.conf, postgresql.conf, postgresql.auto.conf) to tar-ball 
 - [x] Generating logs and includes error handling
 - [x] Can be scheduled for daily execution
 - [x] Included a backup retention mechanism and is deleting backups after a define time automatically
