@@ -53,4 +53,8 @@ $ crontab -l
 0 22 * * * /home/postgres/scripts/pg-backup/pg-backup.sh
 ```
 ### Backup flow visualisation
+- Backups until 7 days remain uncompressed the file system
+- Backups between 7 and 30 days remain compressed at the file system
+- Backups older than 30 days will be dropped
+
 ![GitHub Image](pg-backup-process-flow.png)
