@@ -44,7 +44,7 @@ $ ls -la $HOME/scripts/pg-backup
 | pgdumpall_HOSTNAME_DATETIME **.clog**  | List all deleted and compressed files depending on the retention  |
 | pgdumpall_HOSTNAME_DATETIME **.log**  |  General script log of pg_dumpall execution  |
 | pgdumpall_HOSTNAME_DATETIME **.sql**  | Actual backup file from pg_dumpall  |
-| pgdumpall_HOSTNAME_DATETIME **.sql.gz|.sql.zst**  | Compressed version from actual backup file  |
+| pgdumpall_HOSTNAME_DATETIME **.sql.gz/.sql.zst**  | Compressed version from actual backup file  |
 | pgdumpall_HOSTNAME_DATETIME **.conf.tar**  | Config files from PGDATA (*.conf)  |
 
 ### Scheduling
