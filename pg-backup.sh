@@ -2,7 +2,7 @@
 ################################################################################################
 #### Scripname:         pg-backup.sh
 #### Description:       This is script is performing a PostgreSQL backup and is deleting older dumps
-#### Version:           1.6
+#### Version:           1.7
 ################################################################################################
 
 #### Time Function for logs
@@ -23,7 +23,7 @@ source "$(dirname $0)/pg-backup.conf"
 POSTFIX=${HOSTNAME}_$(date +"%Y%m%d%H%M")
 CLEANLOG=${BACKUPLOC}/pgdumpall_${POSTFIX}.clog
 LOGFILE=${BACKUPLOC}/pgdumpall_${POSTFIX}.log
-SCRIPTVERSION="1.6"
+SCRIPTVERSION="1.7"
 
 ### Check if script is already running
 if [ $(pgrep -f $(basename $0) | wc --lines) -gt 2 ]; then
@@ -60,11 +60,22 @@ if [ ! -f ${PGPASSFILE} ]; then
   exit 1
 fi
 
+### Find PGDATA location
+PGDATA=$(systemctl cat postgresql.service | grep "Environment=PGDATA=" | awk -F'=' '{print $3}' | tail -1)
+if [ -z ${PGDATA} ]; then
+  echo "$(_currtime) - Cannot find PGDATA at systemctl" | tee -a ${LOGFILE}
+  echo "$(_currtime) - Script ends" | tee -a ${LOGFILE}
+  mv ${LOGFILE} ${LOGFILE}.FAILED
+  exit 1
+fi
+
 ### Show file information
 echo "$(_currtime) - Script version: ${SCRIPTVERSION}" | tee -a ${LOGFILE}
 echo "$(_currtime) - Log: ${LOGFILE}" | tee -a ${LOGFILE}
-echo "$(_currtime) - Backup file: ${BACKUPLOC}/pgdumpall_${POSTFIX}.sql" | tee -a ${LOGFILE}
+echo "$(_currtime) - Database backup file: ${BACKUPLOC}/pgdumpall_${POSTFIX}.sql" | tee -a ${LOGFILE}
+echo "$(_currtime) - Config files backup: ${BACKUPLOC}/pgdumpall_${POSTFIX}.conf.tar" | tee -a ${LOGFILE}
 echo "$(_currtime) - Clean log: ${CLEANLOG}" | tee -a ${LOGFILE}
+echo "$(_currtime) - PGDATA: ${PGDATA}" | tee -a ${LOGFILE}
 echo "$(_currtime) - Backup retention: ${RETENTION} days" | tee -a ${LOGFILE}
 echo "$(_currtime) - Compress backup after: ${COMPRESSAFTER} days" | tee -a ${LOGFILE}
 
@@ -82,12 +93,17 @@ if [ ${BCK_RC} -ne 0 ]; then
   exit 1
 fi
 
-echo "$(_currtime) - Backup completed successfully."    | tee -a ${LOGFILE}
+echo "$(_currtime) - Database backup completed successfully."    | tee -a ${LOGFILE}
+
+### Backup all *.conf files at PGDATA
+echo "$(_currtime) - Starting to backup config files..."    | tee -a ${LOGFILE}
+tar --verbose --create --file=${BACKUPLOC}/pgdumpall_${POSTFIX}.conf.tar ${PGDATA}/*.conf >> ${LOGFILE}
+echo "$(_currtime) - Config files backup completed successfully."    | tee -a ${LOGFILE}
 
 ### Delete backups and its logs which are older than retention period
 echo "$(_currtime) - Backups after ${RETENTION} days will be deleted: " | tee -a ${CLEANLOG}
 
-for FILE in $(find ${BACKUPLOC} -type f \( -name '*.sql' -o -name '*.sql.gz' -o -name '*.sql.zst' -o -name '*.log' -o -name '*.clog' \) -mtime +${RETENTION} ! -path '*/.snapshot/*'); do
+for FILE in $(find ${BACKUPLOC} -type f \( -name '*.sql' -o -name '*.sql.gz' -o -name '*.sql.zst' -o -name '*.log' -o -name '*.clog' -o -name '*.tar' \) -mtime +${RETENTION} ! -path '*/.snapshot/*'); do
   echo "$(_currtime) - $(ls -lh ${FILE} | awk '{print $9" - Size: "$5 }')" | tee -a ${CLEANLOG}
   rm --force ${FILE}
 done
